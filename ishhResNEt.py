@@ -3,6 +3,7 @@ from tensorflow import Tensor
 from tensorflow.keras.layers import Input, Conv2D, ReLU, BatchNormalization, \
     AveragePooling2D, Flatten, Dense,Add
 from tensorflow.keras.models import Model
+import matplotlib.pyplot as plt
 
 
 def relu_bn(inputs: Tensor) -> Tensor:
@@ -62,9 +63,38 @@ def ishhResNet():
     )
 
     return model
+def summarize_diagnostics(history,model,epOchs):
+	epochs = list(range(0,epOchs))
+
+	train_loss = history.history['loss']
+	train_acc = history.history['accuracy']
+
+	val_loss = history.history['val_loss']
+	val_acc = history.history['val_accuracy']
+
+
+	fig, ax = plt.subplots(nrows=2, ncols=1, figsize=(8, 6))
+	ax[0].plot(epochs, train_loss, color='green', label="Training loss")
+	ax[0].plot(epochs, val_loss, color='red', label="Validation loss")
+
+	ax[0].legend()
+	ax[0].set(ylabel='Cross Entropy Loss')
+	ax[0].grid()
+
+	ax[1].plot(epochs, train_acc, color='green', label="Training accuracy")
+	ax[1].plot(epochs, val_acc, color='red', label="Validation accuracy")
+
+	ax[1].legend()
+	ax[1].set(xlabel='Epochs', ylabel='Classification Accuracy (%)')
+	ax[1].grid()
+
+	# save plot to file
+	plt.savefig(model+'_plot.png')
+	plt.close()
 
 (trainX, trainY), (testX, testY) = cifar10.load_data()
 model = ishhResNet()
 #print(model.summary())
 epochs = 10
 history = model.fit(trainX, trainY, epochs=epochs, batch_size=64, validation_data=(testX, testY), verbose=1)
+summarize_diagnostics(history,'ishhhResNet',epochs)
