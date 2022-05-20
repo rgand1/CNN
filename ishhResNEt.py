@@ -42,7 +42,7 @@ def ishhResNet():
     for i in range(len(num_blocks_list)):
         num_blocks = num_blocks_list[i]
         for j in range(num_blocks):
-            stride = (j == 2)
+            stride = (j == 2) # replacing maxpooling with conv with stride 2
             t = Conv2D(kernel_size=(3,3),kernel_initializer='he_uniform',
                        strides=(2 if stride else 1),
                        filters=num_filters,
